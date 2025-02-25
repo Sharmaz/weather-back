@@ -1,0 +1,36 @@
+{
+  "name": "weather-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "lint": "eslint .",
+    "cov:clean": "rimraf .nyc_output && rimraf coverage",
+    "cov:unit": "jest --forceExit --colors -c jest.config.unit.js",
+    "test:unit": "npm-run-all cov:clean cov:unit"
+  },
+  "keywords": [],
+  "author": "Ivan Robles <irae@gmail.com>",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@jest/globals": "^29.7.0",
+    "eslint": "^9.11.1",
+    "globals": "^15.9.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1"
+  }
+}
