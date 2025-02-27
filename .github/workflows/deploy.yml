@@ -1,0 +1,43 @@
+name: Deploy
+on: 
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy NodeJS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{secrets.SSH_HOST}}
+          key: ${{secrets.SSH_KEY}}
+          username: ${{secrets.SSH_USERNAME}}
+          password: ${{secrets.SSH_PASSWORD}}
+          script: |
+            cd /var/www || exit
+            if [[ -d "/var/www/weather-back" ]]; then
+              echo "Directory weather-back exists"
+              pm2 stop weather-back
+              pm2 delete weather-back
+              cd weather-back || exit
+              git pull origin main
+              echo "Deployment succesful"
+              npm install
+              echo -e "NODE_ENV=${{secrets.NODE_ENV}}\nPORT=${{secrets.PORT}}
+              LOCATION_API=${{secrets.LOCATION_API}}\nWEATHER_API=${{secrets.WEATHER_API}}\nAPI_KEY=${{secrets.API_KEY}}" >.env
+              pm2 start ./src/index.js --name weather-back
+            else
+              echo "Directory not found"
+              git clone git@github.com:Sharmaz/weather-back.git
+              echo "Deployment succesful"
+              cd weather-back || exit
+              npm install
+              echo -e "NODE_ENV=${{secrets.NODE_ENV}}\nPORT=${{secrets.PORT}}
+              LOCATION_API=${{secrets.LOCATION_API}}\nWEATHER_API=${{secrets.WEATHER_API}}\nAPI_KEY=${{secrets.API_KEY}}" >.env
+              pm2 start ./src/index.js --name weather-back
+            fi
